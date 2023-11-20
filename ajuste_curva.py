@@ -30,6 +30,8 @@ def ajuste_lotka_volterra(t, alpha):
 # Ajustar el modelo a los datos ruidosos para estimar el parámetro alpha
 popt, pcov = curve_fit(ajuste_lotka_volterra, t, datos_ruidosos.flatten(), p0=[0.1])
 
+plt.figure(figsize=(12, 8))
+
 # Graficar resultados
 plt.plot(t, datos_ruidosos[:, 0], 'o', label='Presa (Datos ruidosos)')
 plt.plot(t, datos_ruidosos[:, 1], 'o', label='Depredador (Datos ruidosos)')
@@ -40,6 +42,30 @@ plt.xlabel('Tiempo')
 plt.ylabel('Población')
 plt.title('Ajuste de Lotka-Volterra')
 plt.show()
+
+# Calcular y graficar residuales
+residuales_presa = datos_ruidosos[:, 0] - ajuste_lotka_volterra(t, *popt).reshape((N, 2))[:, 0]
+residuales_depredador = datos_ruidosos[:, 1] - ajuste_lotka_volterra(t, *popt).reshape((N, 2))[:, 1]
+
+plt.subplot(1, 2, 1)
+plt.plot(t, residuales_presa, 'o', label='Residuales Presa')
+plt.axhline(0, color='black', linestyle='--', linewidth=1)
+plt.xlabel('Tiempo')
+plt.ylabel('Residuales')
+plt.title('Residuales de la Presa')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(t, residuales_depredador, 'o', label='Residuales Depredador')
+plt.axhline(0, color='black', linestyle='--', linewidth=1)
+plt.xlabel('Tiempo')
+plt.ylabel('Residuales')
+plt.title('Residuales del Depredador')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
 
 # Mostrar el valor estimado de alpha
 #print(f"Valor estimado de alpha: {popt[0]}")
